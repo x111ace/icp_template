@@ -1,0 +1,32 @@
+# dfx
+.dfx/
+.env
+
+# Frontend build
+frontend/dist/
+frontend/node_modules/
+frontend/.svelte-kit/
+
+# Backend build
+target/
+*.wasm
+Cargo.lock
+backend/backend.did
+
+# Generated declarations
+src/declarations/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+.cursor/
+.cursorrules

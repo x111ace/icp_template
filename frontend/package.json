@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prebuild": "npm i --include=dev && dfx generate backend",
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@dfinity/agent": "^2.4.1",
+    "@dfinity/auth-client": "^2.4.1",
+    "@dfinity/identity": "^2.4.1"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.1",
+    "@types/node": "^24.1.0",
+    "@sveltejs/kit": "^2.5.5",
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "rollup": "^4.28.1",
+    "svelte": "^4.2.12",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "vite-plugin-environment": "^1.1.3"
+  }
+}
