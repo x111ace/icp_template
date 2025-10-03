@@ -174,9 +174,22 @@ def deploy_backend(output: bool = False):
     if output:
         print(f"{CYN}Deploying backend...{RRR}")
     
-    subprocess.run(["dfx", "deploy"], cwd=SCRIPT_DIR, check=True)
+    subprocess.run(["dfx", "deploy", "backend"], cwd=SCRIPT_DIR, check=True)
     if output:
         print(f"{GRN}Backend deployed.{RRR}")
+
+def deploy_replica(output: bool = False):
+    """Deploy the replica canisters."""
+    if output:
+        print(f"{CYN}Deploying replica...{RRR}")
+    try:
+        subprocess.run(["dfx", "deploy"], cwd=SCRIPT_DIR, check=True)
+        if output:
+            print(f"{GRN}Replica deployed.{RRR}")
+    except subprocess.CalledProcessError as e:
+        if output:
+            print(f"{RED}Replica deployment failed: {e}{RRR}")
+        raise
 
 def rebuild(output: bool = False):
     """Full rebuild: replica + backend + frontend."""
@@ -186,6 +199,7 @@ def rebuild(output: bool = False):
     restart_replica(output)      # Start replica
     deploy_backend(output)       # Deploy backend (generates backend.did)
     build_frontend(output)       # Build frontend (uses backend.did)
+    deploy_replica(output)       # Deploy replica (uses backend.did)
 
     if output:
         print(f"{BRT}{GRN}--- Rebuild complete! ---{RRR}")
@@ -194,8 +208,8 @@ def main():
     parser = argparse.ArgumentParser(description="ICP Svelte project manager")
     parser.add_argument("-t", "--tree", action="store_true", help="Show project tree")
     parser.add_argument("-c", "--clean", action="store_true", help="Clean build artifacts")
+    parser.add_argument("-d", "--deploy", action="store_true", help="Deploy replica canisters")
     parser.add_argument("-fb", "--frontend", action="store_true", help="Build frontend only")
-    parser.add_argument("-r", "--replica", action="store_true", help="Restart replica canisters and deploy")
     parser.add_argument("-rb", "--rebuild", action="store_true", help="Full rebuild (frontend + replica)")
     
     args = parser.parse_args()
@@ -204,11 +218,11 @@ def main():
         project_tree(SCRIPT_DIR, output=True)
     elif args.clean:
         clean_project(output=True)
+    elif args.deploy:
+        restart_replica(output=True)
+        deploy_replica(output=True)
     elif args.frontend:
         build_frontend(output=True)
-    elif args.replica:
-        restart_replica(output=True)
-        deploy_backend(output=True)
     elif args.rebuild:
         rebuild(output=True)
     else:
