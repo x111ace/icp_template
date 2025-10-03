@@ -179,13 +179,13 @@ def deploy_backend(output: bool = False):
         print(f"{GRN}Backend deployed.{RRR}")
 
 def rebuild(output: bool = False):
-    """Full rebuild: replica restart + frontend build."""
+    """Full rebuild: replica + backend + frontend."""
     if output:
         print(f"{BRT}{CYN}--- Full Rebuild ---{RRR}")
     
-    restart_replica(output)
-    build_frontend(output)
-    deploy_backend(output)
+    restart_replica(output)      # Start replica
+    deploy_backend(output)       # Deploy backend (generates backend.did)
+    build_frontend(output)       # Build frontend (uses backend.did)
 
     if output:
         print(f"{BRT}{GRN}--- Rebuild complete! ---{RRR}")
