@@ -55,7 +55,6 @@ PROG_LANG_EXTS = {
     ".md": "Markdown"
 }
 
-
 def project_tree(root_dir: str, output: bool = False) -> str:
     """Generate file tree with stats."""
     tree_lines = []
@@ -165,22 +164,29 @@ def restart_replica(output: bool = False):
         if output:
             print(f"{GRN}Replica started.{RRR}")
         
-        subprocess.run(["dfx", "deploy"], cwd=SCRIPT_DIR, check=True)
-        if output:
-            print(f"{GRN}Canisters deployed.{RRR}")
     except subprocess.CalledProcessError as e:
         if output:
             print(f"{RED}Replica operation failed: {e}{RRR}")
         raise
 
+def deploy_backend(output: bool = False):
+    """Deploy the backend canisters."""
+    if output:
+        print(f"{CYN}Deploying backend...{RRR}")
+    
+    subprocess.run(["dfx", "deploy"], cwd=SCRIPT_DIR, check=True)
+    if output:
+        print(f"{GRN}Backend deployed.{RRR}")
+
 def rebuild(output: bool = False):
-    """Full rebuild: frontend + replica restart."""
+    """Full rebuild: replica restart + frontend build."""
     if output:
         print(f"{BRT}{CYN}--- Full Rebuild ---{RRR}")
     
-    build_frontend(output)
     restart_replica(output)
-    
+    build_frontend(output)
+    deploy_backend(output)
+
     if output:
         print(f"{BRT}{GRN}--- Rebuild complete! ---{RRR}")
 
@@ -202,6 +208,7 @@ def main():
         build_frontend(output=True)
     elif args.replica:
         restart_replica(output=True)
+        deploy_backend(output=True)
     elif args.rebuild:
         rebuild(output=True)
     else:
